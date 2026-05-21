@@ -28,6 +28,10 @@ func main() {
     // create chi router
     r := chi.NewRouter()
 
+	// global middleware, runs on every request before routing
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
     // health endpoint
     r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
         w.Header().Set("Content-Type", "application/json")
