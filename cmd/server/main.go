@@ -8,6 +8,7 @@ import (
     "log"
     "github.com/MerchantGuildMember/uptimemonitor/internal/db"
     "github.com/MerchantGuildMember/uptimemonitor/internal/handlers"
+	"github.com/MerchantGuildMember/uptimemonitor/internal/middleware"
 )
 
 func main() {
