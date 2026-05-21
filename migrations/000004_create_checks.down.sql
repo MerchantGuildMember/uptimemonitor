@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS checks;
+DROP TYPE IF EXISTS summary_status;
