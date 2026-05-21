@@ -38,7 +38,22 @@ func main() {
         w.Write([]byte(`{"status": "ok"}`))
     })
 
-    // check port in env
+	h := handlers.New(pool, []byte(secret))
+
+	// public routes, no JWT required
+	r.Post("/auth/register", h.Register)
+	r.Post("/auth/login", h.Login)
+
+	// protected routes
+	// authenticate validates the bearer token and injects the user ID
+	// into the request context for all handlers in this group
+	r.Group(func(r chi.Router) {
+		r.Use(appmiddleware.Authenticate([]byte(secret)))
+		r.Post("/monitors", h.CreateMonitor)
+		r.Get("/monitors", h.GetMonitors)
+		r.Get("/monitors/{id}/history", h.GetMonitorHistory)
+	})
+
     port, exists := os.LookupEnv("PORT")
     if !exists || port == "" {
         port = "8080" // fallback
