@@ -1,0 +1,21 @@
+# Binary
+cmd/server/server
+bin/
+
+# Environment
+.env
+.env.local
+
+# Go
+*.exe
+*.test
+*.out
+/vendor/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
