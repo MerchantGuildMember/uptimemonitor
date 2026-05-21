@@ -59,19 +59,13 @@ func main() {
         port = "8080" // fallback
     }
 
-    // create handler instance
-    h := handlers.New(pool)
-
-    // register route
-    r.Post("/monitors", h.CreateMonitor)
-
     // print which port will be used
-    log.Printf("Starting server on port %s...", port)
+	log.Printf("Starting server on port %s...", port)
 
     // start http server
-    if err := http.ListenAndServe(":" + port, r); err != nil {
-        log.Fatalf("Server failed to start: %v", err)
-    }
+	if err := http.ListenAndServe(":"+port, r); err != nil {
+		log.Fatalf("Server failed to start: %v", err)
+	}
 }
 
 
