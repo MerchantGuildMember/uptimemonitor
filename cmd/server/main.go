@@ -19,8 +19,18 @@ func main() {
     // create chi router
     r := chi.NewRouter()
 
+    // health endpoint
+    r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Content-Type", "application/json")
+        w.Write([]byte(`{"status": "ok"}`))
+    })
+
     // strt http server
-    http.ListenAndServe(":" + os.Getenv("PORT"), r)
+    err = http.ListenAndServe(":" + os.Getenv("PORT"), r)
+    if err != nil {
+            // handle error
+            log.Fatal("Unable to serve!")
+        }
 }
 
 
