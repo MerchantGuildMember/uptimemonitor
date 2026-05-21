@@ -6,15 +6,22 @@ import (
     "net/http"
     "os"
     "log"
+    "github.com/MerchantGuildMember/uptimemonitor/internal/db"
 )
 
 func main() {
     // load env file
-    err := godotenv.Load(".env")
-    if err != nil {
-        // handle error
-        log.Fatal("Unable to reach .env!")
+    if err := godotenv.Load(".env"); err != nil {
+        // handle error and switch to system environment
+        log.Printf("Unable to reach .env!: %v", err)
     }
+
+    // call ConnectDB()
+    pool, err := db.ConnectDB()
+    if err != nil {
+        log.Fatalf("Failed to connect to DB: %v", err)
+    }
+    defer pool.Close() // register pool clean up
 
     // create chi router
     r := chi.NewRouter()
@@ -25,12 +32,19 @@ func main() {
         w.Write([]byte(`{"status": "ok"}`))
     })
 
-    // strt http server
-    err = http.ListenAndServe(":" + os.Getenv("PORT"), r)
-    if err != nil {
-            // handle error
-            log.Fatal("Unable to serve!")
-        }
+    // check port in env
+    port, exists := os.LookupEnv("PORT")
+    if !exists || port == "" {
+        port = "8080" // fallback
+    }
+
+    // print which port will be used
+    log.Printf("Starting server on port %s...", port)
+
+    // start http server
+    if err := http.ListenAndServe(":" + port, r); err != nil {
+        log.Fatalf("Server failed to start: %v", err)
+    }
 }
 
 
